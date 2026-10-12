@@ -1,0 +1,116 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum ResourceStatus {
+  AVAILABLE
+  MAINTENANCE
+  RETIRED
+}
+
+enum ReservationStatus {
+  CONFIRMED
+  CHECKED_IN
+  COMPLETED
+  CANCELLED
+}
+
+model User {
+  id              String           @id @default(cuid())
+  name            String
+  email           String           @unique
+  department      String
+  role            Role             @default(MEMBER)
+  avatarUrl       String?
+  reservations    Reservation[]
+  maintenanceLogs MaintenanceLog[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@map("users")
+}
+
+model ResourceCategory {
+  id          String     @id @default(cuid())
+  name        String     @unique
+  slug        String     @unique
+  description String
+  icon        String     @default("Layers")
+  resources   Resource[]
+  createdAt   DateTime   @default(now())
+
+  @@map("resource_categories")
+}
+
+model Resource {
+  id                String          @id @default(cuid())
+  code              String          @unique
+  name              String
+  description       String
+  categoryId        String
+  category          ResourceCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  location          String
+  capacity          Int             @default(1)
+  amenities         String          @default("[]") // JSON stringified array of amenities
+  status            ResourceStatus  @default(AVAILABLE)
+  imageUrl          String?
+  minBookingMinutes Int             @default(15)
+  maxBookingMinutes Int             @default(480)
+  requiresApproval  Boolean         @default(false)
+  reservations      Reservation[]
+  maintenanceLogs   MaintenanceLog[]
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@index([categoryId])
+  @@index([status])
+  @@map("resources")
+}
+
+model Reservation {
+  id                 String            @id @default(cuid())
+  resourceId         String
+  resource           Resource          @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  userId             String
+  user               User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title              String
+  startTime          DateTime
+  endTime            DateTime
+  status             ReservationStatus @default(CONFIRMED)
+  notes              String?
+  attendeesCount     Int               @default(1)
+  checkInTime        DateTime?
+  cancellationReason String?
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+
+  @@index([resourceId, startTime, endTime])
+  @@index([userId])
+  @@index([status])
+  @@map("reservations")
+}
+
+model MaintenanceLog {
+  id          String   @id @default(cuid())
+  resourceId  String
+  resource    Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action      String
+  details     String
+  performedBy String
+  createdAt   DateTime @default(now())
+
+  @@index([resourceId])
+  @@map("maintenance_logs")
+}
