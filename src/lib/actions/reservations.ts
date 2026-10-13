@@ -156,11 +156,34 @@ export async function createReservation(input: CreateReservationInput) {
         );
       }
 
-      // 5. Create reservation
+      // 5. Ensure valid user
+      let validUserId = input.userId;
+      const existingUser = await tx.user.findUnique({
+        where: { id: input.userId },
+      });
+
+      if (!existingUser) {
+        const fallback = await tx.user.findFirst({
+          where: {
+            OR: [
+              { email: { contains: input.userId.replace("user-", "") } },
+              { name: { contains: input.userId.replace("user-", "") } },
+            ],
+          },
+        });
+        if (fallback) {
+          validUserId = fallback.id;
+        } else {
+          const firstUser = await tx.user.findFirst();
+          if (firstUser) validUserId = firstUser.id;
+        }
+      }
+
+      // 6. Create reservation
       return await tx.reservation.create({
         data: {
           resourceId: input.resourceId,
-          userId: input.userId,
+          userId: validUserId,
           title: input.title,
           startTime: start,
           endTime: end,

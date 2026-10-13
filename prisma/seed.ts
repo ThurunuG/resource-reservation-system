@@ -15,6 +15,7 @@ async function main() {
   // 2. Seed Users
   const alex = await prisma.user.create({
     data: {
+      id: "user-alex",
       name: "Alex Perera",
       email: "alex.perera@primewave.lk",
       department: "Engineering",
@@ -25,6 +26,7 @@ async function main() {
 
   const dilshan = await prisma.user.create({
     data: {
+      id: "user-dilshan",
       name: "Dilshan Silva",
       email: "dilshan.silva@primewave.lk",
       department: "Product Design",
@@ -35,6 +37,7 @@ async function main() {
 
   const kavindi = await prisma.user.create({
     data: {
+      id: "user-kavindi",
       name: "Kavindi Jayawardena",
       email: "kavindi.j@primewave.lk",
       department: "Data & AI",
@@ -45,6 +48,7 @@ async function main() {
 
   const niroshan = await prisma.user.create({
     data: {
+      id: "user-niroshan",
       name: "Niroshan Fernando",
       email: "niroshan.f@primewave.lk",
       department: "Operations & Facilities",
