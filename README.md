@@ -218,7 +218,10 @@ A comprehensive, time-stamped 3–5 minute presentation guide and speech script 
 │   ├── schema.prisma               # PostgreSQL relational schema
 │   └── seed.ts                     # Enterprise database seed script
 ├── docker-compose.yml              # Local PostgreSQL container definition
+├── FULL_FEATURE_DEMO_GUIDE.md      # Comprehensive feature demo walkthrough & video script
 ├── ER_DIAGRAM.md                   # Complete database architecture & ERD
+├── er_diagram.png                  # High-resolution (300 DPI) ER Diagram (Dark Edition)
+├── er_diagram_light.png            # High-resolution (300 DPI) ER Diagram (Light Edition)
 ├── DEMO_VIDEO_GUIDE.md             # 3-5 minute video recording script
 └── package.json
 ```
