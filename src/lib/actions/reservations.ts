@@ -156,28 +156,58 @@ export async function createReservation(input: CreateReservationInput) {
         );
       }
 
-      // 5. Ensure valid user
+      // 5. Ensure valid user exists in PostgreSQL
       let validUserId = input.userId;
-      const existingUser = await tx.user.findUnique({
+      let existingUser = await tx.user.findUnique({
         where: { id: input.userId },
       });
 
       if (!existingUser) {
-        const fallback = await tx.user.findFirst({
+        // Map preset ID to email
+        const emailMap: Record<string, string> = {
+          "user-alex": "alex.perera@primewave.lk",
+          "user-dilshan": "dilshan.silva@primewave.lk",
+          "user-kavindi": "kavindi.j@primewave.lk",
+          "user-niroshan": "niroshan.f@primewave.lk",
+        };
+        const mappedEmail = emailMap[input.userId];
+        if (mappedEmail) {
+          existingUser = await tx.user.findUnique({ where: { email: mappedEmail } });
+        }
+      }
+
+      if (!existingUser) {
+        // Fallback: match by partial email or name
+        const cleanKey = input.userId.replace("user-", "").toLowerCase();
+        existingUser = await tx.user.findFirst({
           where: {
             OR: [
-              { email: { contains: input.userId.replace("user-", "") } },
-              { name: { contains: input.userId.replace("user-", "") } },
+              { email: { contains: cleanKey } },
+              { name: { contains: cleanKey, mode: "insensitive" } },
             ],
           },
         });
-        if (fallback) {
-          validUserId = fallback.id;
-        } else {
-          const firstUser = await tx.user.findFirst();
-          if (firstUser) validUserId = firstUser.id;
-        }
       }
+
+      if (!existingUser) {
+        // Fallback: use first user in the database
+        existingUser = await tx.user.findFirst();
+      }
+
+      if (!existingUser) {
+        // If DB has 0 users, auto-create the demo admin user
+        existingUser = await tx.user.create({
+          data: {
+            id: input.userId,
+            name: "Alex Perera",
+            email: "alex.perera@primewave.lk",
+            department: "Engineering",
+            role: "ADMIN",
+          },
+        });
+      }
+
+      validUserId = existingUser.id;
 
       // 6. Create reservation
       return await tx.reservation.create({
