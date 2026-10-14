@@ -6,9 +6,11 @@ import textwrap
 import os
 
 def generate_diagram(is_dark=True, filename_suffix=""):
+    # Build the diagram on a large canvas so the exported PNG stays readable.
     # Ultra-high-res 21x13 inches at 300 DPI (6300 x 3900 px)
     fig, ax = plt.subplots(figsize=(21, 13), dpi=300)
     
+    # Keep card, text, border, and relationship colors consistent for each theme.
     if is_dark:
         bg_color = "#090d16"
         card_bg = "#131b2a"
@@ -56,6 +58,7 @@ def generate_diagram(is_dark=True, filename_suffix=""):
     ax.plot([80, 2020], [1180, 1180], color=line_color, linewidth=1.5)
 
     def render_table(ax, x, top_y, width, title, header_color, fields):
+        # Draw a table card and its fields; each field is (key marker, name, data type).
         header_h = 44
         row_h = 24.5
         total_h = header_h + len(fields) * row_h + 14
@@ -191,6 +194,7 @@ def generate_diagram(is_dark=True, filename_suffix=""):
 
     # Relationships
     def draw_badge_arrow(ax, p1, p2, color, badge_text):
+        # Connect related tables and label the cardinality at the midpoint.
         ax.annotate("", xy=p2, xytext=p1,
                     arrowprops=dict(arrowstyle="-|>,head_width=0.45,head_length=0.65", color=color, lw=2.2))
         mx = (p1[0] + p2[0]) / 2
@@ -300,6 +304,7 @@ def generate_diagram(is_dark=True, filename_suffix=""):
         lx += 265
 
     out_file = f"er_diagram{filename_suffix}.png"
+    # Save each theme to the project scratch, public, and diagram-output folders.
     out_paths = [
         os.path.join("C:/Users/thuru/.gemini/antigravity/scratch/resource-reservation-system", out_file),
         os.path.join("C:/Users/thuru/.gemini/antigravity/scratch/resource-reservation-system/public", out_file),

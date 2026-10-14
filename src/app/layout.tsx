@@ -4,6 +4,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { UserProvider } from "@/components/UserContext";
 
+// Default metadata shared by pages in the application.
 export const metadata: Metadata = {
   title: "PrimeWave | Resource Reservation Management System",
   description: "Enterprise shared resource coordination, calendar scheduling, and conflict prevention platform.",
@@ -14,6 +15,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Keep the navigation, page content, and footer in a shared layout.
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased min-h-screen flex flex-col bg-slate-50 text-slate-900" suppressHydrationWarning>

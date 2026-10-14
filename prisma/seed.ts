@@ -227,6 +227,8 @@ async function main() {
   });
 
   // 6. Seed Realistic Reservations (Relative to Current Time)
+  // Anchor the sample bookings to the current time so the dashboard always has
+  // examples of past, active, and upcoming reservations.
   const now = new Date();
   
   // Past reservation (Completed)
@@ -280,6 +282,7 @@ async function main() {
   });
 
   // Tomorrow reservation (Confirmed)
+  // Move to tomorrow, then set a predictable local booking time.
   const tomorrowStart = new Date(now.getTime() + 24 * 60 * 60 * 1000);
   tomorrowStart.setHours(10, 0, 0, 0);
   const tomorrowEnd = new Date(tomorrowStart.getTime() + 2 * 60 * 60 * 1000);
@@ -319,6 +322,7 @@ async function main() {
 main()
   .catch((e) => {
     console.error("❌ Seed error:", e);
+    // Return a non-zero exit code so scripts and CI detect the failure.
     process.exit(1);
   })
   .finally(async () => {

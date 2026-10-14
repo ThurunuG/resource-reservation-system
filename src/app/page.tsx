@@ -20,8 +20,10 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
+  // Fetch current dashboard metrics and the complete resource list on each request.
   const metrics = await getDashboardMetrics();
   const allResources = await getResources();
+  // Feature only a few resources here; the resources page shows the full list.
   const featuredResources = allResources.slice(0, 3);
 
   return (
@@ -61,7 +63,7 @@ export default async function DashboardPage() {
         <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/4 w-96 h-96 bg-brand-500/10 rounded-full blur-3xl pointer-events-none" />
       </div>
 
-      {/* KPI Stats Grid */}
+      {/* KPI summary of resource availability, reservations, utilization, and maintenance. */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Metric 1: Total Resources */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
@@ -129,7 +131,7 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* Featured Resources Section */}
+      {/* A short resource preview with a link to browse the complete inventory. */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
@@ -156,7 +158,7 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* Two Column Layout: Recent Reservations Feed & Category Distribution */}
+      {/* Operational overview: recent reservations alongside resource category totals. */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Recent Reservations Feed (2 cols) */}
         <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">

@@ -3,9 +3,11 @@ import { getResources, getCategories } from "@/lib/actions/resources";
 import { ResourceCatalog } from "@/components/ResourceCatalog";
 import { Building2 } from "lucide-react";
 
+// Always load the latest resources and categories instead of serving a cached page.
 export const dynamic = "force-dynamic";
 
 export default async function ResourcesPage() {
+  // Fetch both datasets concurrently to reduce the page's loading time.
   const [resources, categories] = await Promise.all([
     getResources(),
     getCategories(),

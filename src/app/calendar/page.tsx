@@ -7,6 +7,7 @@ import { CalendarDays } from "lucide-react";
 export const dynamic = "force-dynamic";
 
 export default async function CalendarPage() {
+  // Fetch the data needed to build the schedule in parallel.
   const [resources, reservations, categories] = await Promise.all([
     getResources(),
     getAllReservations(),
@@ -27,6 +28,7 @@ export default async function CalendarPage() {
         </div>
       </div>
 
+      {/* Show the reservation timeline for all available resources. */}
       <TimelineSchedule
         resources={resources as any}
         reservations={reservations as any}

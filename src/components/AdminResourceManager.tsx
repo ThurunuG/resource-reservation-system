@@ -52,6 +52,7 @@ export function AdminResourceManager({
   const [maintenanceAction, setMaintenanceAction] = useState<"ENABLE" | "DISABLE">("ENABLE");
 
   const openMaintenanceModal = (resource: ResourceWithCategory) => {
+    // Set the available action to the inverse of the resource's current status.
     setSelectedResource(resource);
     const willEnable = resource.status !== "MAINTENANCE";
     setMaintenanceAction(willEnable ? "ENABLE" : "DISABLE");
@@ -67,6 +68,7 @@ export function AdminResourceManager({
     e.preventDefault();
     if (!selectedResource) return;
 
+    // Track the async server update so submission buttons can show pending state.
     startTransition(async () => {
       const res = await toggleResourceMaintenance(
         selectedResource.id,
@@ -85,6 +87,7 @@ export function AdminResourceManager({
     e.preventDefault();
     setCreateError(null);
 
+    // Normalize the comma-separated amenities field to the action's array format.
     const amenitiesList = amenitiesStr
       .split(",")
       .map((s) => s.trim())

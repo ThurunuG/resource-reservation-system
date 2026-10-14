@@ -3,9 +3,11 @@ import { getResources, getCategories } from "@/lib/actions/resources";
 import { AdminResourceManager } from "@/components/AdminResourceManager";
 import { Settings } from "lucide-react";
 
+// Ensure the admin view fetches fresh data on every request.
 export const dynamic = "force-dynamic";
 
 export default async function AdminResourcesPage() {
+  // Load resources and categories in parallel before rendering the manager.
   const [resources, categories] = await Promise.all([
     getResources(),
     getCategories(),

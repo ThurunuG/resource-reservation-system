@@ -6,6 +6,7 @@ export function Footer() {
     <footer className="mt-20 border-t border-slate-200 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          {/* Brand identity and assessment context. */}
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white">
               <Waves className="w-4 h-4" />
@@ -20,6 +21,7 @@ export function Footer() {
             </div>
           </div>
 
+          {/* Current service health and the technologies used by the app. */}
           <div className="flex items-center gap-6 text-xs text-slate-500">
             <span className="flex items-center gap-1.5 text-emerald-600 font-medium">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -30,6 +32,7 @@ export function Footer() {
             <span>PostgreSQL</span>
           </div>
 
+          {/* Copyright and evaluation attribution. */}
           <p className="text-xs text-slate-400">
             &copy; 2026 PrimeWave Lab. Built for Internship Evaluation.
           </p>

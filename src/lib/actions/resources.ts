@@ -5,6 +5,7 @@ import { ResourceStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 export async function getCategories() {
+  // Include resource counts for category usage summaries.
   try {
     return await prisma.resourceCategory.findMany({
       orderBy: { name: "asc" },
@@ -28,6 +29,7 @@ export async function getResources(filters?: {
   location?: string;
 }) {
   try {
+    // Add only the filters supplied by the caller to the Prisma query.
     const where: any = {};
 
     if (filters?.search) {
@@ -75,6 +77,7 @@ export async function getResources(filters?: {
 
 export async function getResourceById(id: string) {
   try {
+    // Fetch upcoming reservations and recent maintenance history for this resource.
     return await prisma.resource.findUnique({
       where: { id },
       include: {
@@ -109,6 +112,7 @@ export async function toggleResourceMaintenance(
   performedBy: string = "System Admin"
 ) {
   try {
+    // Keep the status update and its maintenance log entry in one transaction.
     const newStatus = enable ? ResourceStatus.MAINTENANCE : ResourceStatus.AVAILABLE;
 
     const [updatedResource] = await prisma.$transaction([
@@ -149,6 +153,7 @@ export async function createResource(data: {
   imageUrl?: string;
 }) {
   try {
+    // Normalize the code before checking for duplicates and creating the resource.
     const existingCode = await prisma.resource.findUnique({
       where: { code: data.code.toUpperCase() },
     });

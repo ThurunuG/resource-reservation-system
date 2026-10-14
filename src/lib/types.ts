@@ -2,6 +2,7 @@ import { Resource, ResourceCategory, Reservation, User, MaintenanceLog, Resource
 
 export type { Resource, ResourceCategory, Reservation, User, MaintenanceLog, ResourceStatus, ReservationStatus, Role };
 
+/** A resource with its category and optional reservation summary data. */
 export interface ResourceWithCategory extends Resource {
   category: ResourceCategory;
   reservations?: Reservation[];
@@ -10,6 +11,7 @@ export interface ResourceWithCategory extends Resource {
   };
 }
 
+/** A reservation joined with the associated resource, category, and user. */
 export interface ReservationWithDetails extends Reservation {
   resource: Resource & {
     category: ResourceCategory;
@@ -17,6 +19,7 @@ export interface ReservationWithDetails extends Reservation {
   user: User;
 }
 
+/** Aggregate counts and lists used to populate the dashboard. */
 export interface DashboardMetrics {
   totalResources: number;
   availableResources: number;
@@ -24,7 +27,7 @@ export interface DashboardMetrics {
   totalReservationsCount: number;
   activeReservationsCount: number;
   todayReservationsCount: number;
-  utilizationRate: number; // percentage
+  utilizationRate: number; // Percentage of resources currently in use.
   popularResources: {
     id: string;
     name: string;
@@ -39,6 +42,7 @@ export interface DashboardMetrics {
   recentReservations: ReservationWithDetails[];
 }
 
+/** Result of checking whether a requested reservation conflicts with another. */
 export interface ConflictCheckResult {
   hasConflict: boolean;
   message?: string;
@@ -51,6 +55,7 @@ export interface ConflictCheckResult {
   };
 }
 
+/** Fields required to create a reservation. Times may be ISO strings or Date objects. */
 export interface CreateReservationInput {
   resourceId: string;
   userId: string;

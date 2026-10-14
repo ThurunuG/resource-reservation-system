@@ -10,6 +10,7 @@ export async function getDashboardMetrics(): Promise<DashboardMetrics> {
     const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
     const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
 
+    // Run independent metric queries concurrently to reduce dashboard load time.
     const [
       totalResources,
       availableResources,
@@ -74,8 +75,8 @@ export async function getDashboardMetrics(): Promise<DashboardMetrics> {
       }),
     ]);
 
-    // Calculate approximate utilization rate for today
-    // Total available resource hours today vs booked hours today
+    // Estimate today's utilization from reservation count, using four booking
+    // slots per resource as an approximation rather than measuring durations.
     const utilizationRate =
       totalResources > 0
         ? Math.min(100, Math.round((todayReservationsCount / (totalResources * 4)) * 100))
@@ -88,7 +89,8 @@ export async function getDashboardMetrics(): Promise<DashboardMetrics> {
       totalReservationsCount,
       activeReservationsCount,
       todayReservationsCount,
-      utilizationRate: utilizationRate || 35, // realistic baseline if freshly seeded
+      // Use a modest baseline for a fresh installation with no reservations.
+      utilizationRate: utilizationRate || 35,
       popularResources: resourcesWithReservations.map((r) => ({
         id: r.id,
         name: r.name,

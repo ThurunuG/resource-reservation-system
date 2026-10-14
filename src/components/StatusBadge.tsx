@@ -9,8 +9,10 @@ interface StatusBadgeProps {
 
 export function StatusBadge({ status, size = "md" }: StatusBadgeProps) {
   const isSm = size === "sm";
+  // Apply consistent sizing while allowing compact badges in dense layouts.
   const sizeClasses = isSm ? "text-xs px-2 py-0.5" : "text-xs px-2.5 py-1";
 
+  // Render a distinct label and visual treatment for each known status.
   switch (status) {
     // Resource Statuses
     case "AVAILABLE":
@@ -66,6 +68,7 @@ export function StatusBadge({ status, size = "md" }: StatusBadgeProps) {
       );
 
     default:
+      // Keep unknown or newly added statuses visible with a neutral fallback.
       return (
         <span className={`inline-flex items-center font-medium rounded-full bg-gray-100 text-gray-700 ${sizeClasses}`}>
           {status}

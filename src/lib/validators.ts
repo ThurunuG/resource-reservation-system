@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+// Validates reservation details, including that the end time follows the start time.
 export const createReservationSchema = z
   .object({
     resourceId: z.string().min(1, "Resource selection is required"),
@@ -26,6 +27,7 @@ export const createReservationSchema = z
     }
   );
 
+// Validates optional filters used to search for resources.
 export const resourceFilterSchema = z.object({
   search: z.string().optional(),
   categoryId: z.string().optional(),
@@ -34,6 +36,7 @@ export const resourceFilterSchema = z.object({
   location: z.string().optional(),
 });
 
+// Validates the fields required to update an existing resource.
 export const updateResourceSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(2, "Name must be at least 2 characters"),

@@ -18,11 +18,15 @@ import {
 } from "lucide-react";
 
 export function Navbar() {
+  // Use the current route to highlight the active navigation link.
   const pathname = usePathname();
   const { currentUser, setCurrentUser, availableUsers } = useCurrentUser();
+
+  // Track the two menus independently so either can be opened or closed.
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Define links once to keep desktop and mobile navigation in sync.
   const navLinks = [
     { href: "/", label: "Dashboard", icon: LayoutDashboard },
     { href: "/resources", label: "Resources", icon: Building2 },
@@ -125,6 +129,7 @@ export function Navbar() {
                           key={u.id}
                           type="button"
                           onClick={() => {
+                            // Apply the selected demo user and dismiss the dropdown.
                             setCurrentUser(u);
                             setUserDropdownOpen(false);
                           }}

@@ -22,6 +22,7 @@ interface ResourceBookingPanelProps {
 export function ResourceBookingPanel({ resource }: ResourceBookingPanelProps) {
   const { currentUser } = useCurrentUser();
 
+  // Format date values for datetime-local inputs using the browser's local timezone.
   const getDefaultStart = () => {
     const d = new Date();
     d.setMinutes(0, 0, 0);
@@ -49,7 +50,7 @@ export function ResourceBookingPanel({ resource }: ResourceBookingPanelProps) {
 
   const isMaintenance = resource.status === "MAINTENANCE";
 
-  // Real-time conflict checking
+  // Debounce availability checks so every keystroke does not trigger a request.
   useEffect(() => {
     if (isMaintenance || !startTime || !endTime) return;
 
@@ -57,6 +58,7 @@ export function ResourceBookingPanel({ resource }: ResourceBookingPanelProps) {
     const timer = setTimeout(async () => {
       setIsChecking(true);
       const res = await checkAvailability(resource.id, new Date(startTime), new Date(endTime));
+      // Ignore results from an outdated request after the times or resource change.
       if (isMounted) {
         setIsChecking(false);
         if (res.hasConflict) {
@@ -77,6 +79,7 @@ export function ResourceBookingPanel({ resource }: ResourceBookingPanelProps) {
     e.preventDefault();
     if (conflictMessage || isMaintenance) return;
 
+    // The server performs the final availability check when saving the reservation.
     setIsSubmitting(true);
     setSubmitError(null);
 

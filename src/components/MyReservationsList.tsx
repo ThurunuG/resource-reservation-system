@@ -31,17 +31,19 @@ export function MyReservationsList({
   const [isPending, startTransition] = useTransition();
   const [actionError, setActionError] = useState<string | null>(null);
 
-  // Filter reservations for the active user in the user switcher
+  // Show only reservations belonging to the user selected in the profile switcher.
   const userReservations = initialReservations.filter((r) => {
-    // Match by email or userId
+    // Support both the stable user ID and email for older reservation records.
     return (
       r.user.email === currentUser.email ||
       r.userId === currentUser.id
     );
   });
 
+  // Reuse one timestamp so every reservation is compared against the same moment.
   const now = new Date();
 
+  // Upcoming excludes cancelled bookings; history includes ended and cancelled bookings.
   const filteredReservations = userReservations.filter((r) => {
     const end = new Date(r.endTime);
     if (tab === "UPCOMING") {
@@ -55,6 +57,7 @@ export function MyReservationsList({
 
   const handleCheckIn = (reservationId: string) => {
     setActionError(null);
+    // Run the server action as a transition so pending UI state can be displayed.
     startTransition(async () => {
       const res = await checkInReservation(reservationId);
       if (!res.success) {
@@ -68,6 +71,7 @@ export function MyReservationsList({
       return;
     }
     setActionError(null);
+    // Cancellation releases the reserved time slot for other users.
     startTransition(async () => {
       const res = await cancelReservation(reservationId, "Cancelled by user");
       if (!res.success) {

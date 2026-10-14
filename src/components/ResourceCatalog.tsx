@@ -27,6 +27,7 @@ export function ResourceCatalog({
   const [minCapacity, setMinCapacity] = useState<number>(0);
   const [statusFilter, setStatusFilter] = useState("ALL");
 
+  // Apply each selected criterion to the original catalog before displaying results.
   const filteredResources = useMemo(() => {
     return initialResources.filter((res) => {
       // Search term
@@ -60,6 +61,7 @@ export function ResourceCatalog({
     });
   }, [initialResources, searchTerm, selectedCategory, minCapacity, statusFilter]);
 
+  // Used to conditionally show controls for clearing the current filters.
   const hasActiveFilters =
     searchTerm !== "" ||
     selectedCategory !== "ALL" ||
@@ -67,6 +69,7 @@ export function ResourceCatalog({
     statusFilter !== "ALL";
 
   const resetFilters = () => {
+    // Restore all filter controls to their default values.
     setSearchTerm("");
     setSelectedCategory("ALL");
     setMinCapacity(0);
@@ -148,6 +151,7 @@ export function ResourceCatalog({
             All Categories ({initialResources.length})
           </button>
           {categories.map((cat) => {
+            // Keep category totals independent of the other active filters.
             const count = initialResources.filter((r) => r.categoryId === cat.id).length;
             const isSelected = selectedCategory === cat.id;
             return (

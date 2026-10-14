@@ -27,6 +27,7 @@ export function TimelineSchedule({
   reservations,
   selectedDate: initialDate,
 }: TimelineScheduleProps) {
+  // Keep the active day in YYYY-MM-DD format for date navigation and new reservations.
   const getTodayStr = () => new Date().toISOString().slice(0, 10);
   const [currentDateStr, setCurrentDateStr] = useState(initialDate || getTodayStr());
   const [selectedResourceForBooking, setSelectedResourceForBooking] = useState<ResourceWithCategory | null>(null);
@@ -50,6 +51,7 @@ export function TimelineSchedule({
     const rEnd = new Date(r.endTime);
     const dayStart = new Date(currentDateStr + "T00:00:00");
     const dayEnd = new Date(currentDateStr + "T23:59:59");
+    // Include reservations that overlap any part of the selected day.
     return rStart <= dayEnd && rEnd >= dayStart && r.status !== "CANCELLED";
   });
 
@@ -185,7 +187,7 @@ export function TimelineSchedule({
                           const start = new Date(b.startTime);
                           const end = new Date(b.endTime);
 
-                          // Calculate percentage position across 8:00 (start 8) to 20:00 (end 20 = 12 total hours)
+                          // Convert reservation times to positions on the 8:00–20:00 timeline.
                           const startHourDecimal = start.getHours() + start.getMinutes() / 60;
                           const endHourDecimal = end.getHours() + end.getMinutes() / 60;
 

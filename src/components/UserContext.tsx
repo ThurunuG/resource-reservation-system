@@ -11,6 +11,7 @@ export interface ActiveUser {
   avatarUrl?: string;
 }
 
+// Demo accounts available for switching between roles in the app.
 export const PRESET_USERS: ActiveUser[] = [
   {
     id: "user-alex",
@@ -53,6 +54,7 @@ interface UserContextType {
 }
 
 const UserContext = createContext<UserContextType>({
+  // Safe defaults for consumers rendered outside the provider.
   currentUser: PRESET_USERS[0],
   setCurrentUser: () => {},
   availableUsers: PRESET_USERS,
@@ -62,6 +64,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [currentUser, setCurrentUser] = useState<ActiveUser>(PRESET_USERS[0]);
 
   useEffect(() => {
+    // Restore the saved account, matching it to a known preset user.
     const saved = localStorage.getItem("primewave_active_user");
     if (saved) {
       try {
@@ -69,13 +72,14 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         const match = PRESET_USERS.find((u) => u.email === parsed.email);
         if (match) setCurrentUser(match);
       } catch (e) {
-        // fallback
+        // Ignore invalid stored data and keep the default user.
       }
     }
   }, []);
 
   const handleSetUser = (user: ActiveUser) => {
     setCurrentUser(user);
+    // Persist account changes so they survive page reloads.
     localStorage.setItem("primewave_active_user", JSON.stringify(user));
   };
 

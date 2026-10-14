@@ -15,6 +15,7 @@ export async function checkAvailability(
     const start = new Date(startTime);
     const end = new Date(endTime);
 
+    // Validate the requested time range before checking the database.
     if (isNaN(start.getTime()) || isNaN(end.getTime())) {
       return { hasConflict: true, message: "Invalid date format provided." };
     }
@@ -47,7 +48,7 @@ export async function checkAvailability(
     }
 
     // 2. Query for overlapping reservations
-    // Overlap formula: (StartA < EndB) AND (EndA > StartB)
+    // Adjacent reservations are allowed; conflicts satisfy (StartA < EndB) AND (EndA > StartB).
     const conflicting = await prisma.reservation.findFirst({
       where: {
         resourceId,
@@ -99,6 +100,7 @@ export async function createReservation(input: CreateReservationInput) {
     }
 
     const durationMinutes = Math.round((end.getTime() - start.getTime()) / (1000 * 60));
+  // Check and create the reservation in one transaction to keep database changes consistent.
 
     // Execute atomic reservation within a Prisma transaction
     const reservation = await prisma.$transaction(async (tx) => {
@@ -136,6 +138,7 @@ export async function createReservation(input: CreateReservationInput) {
       }
 
       // 4. Overlap Concurrency Check
+      // Reject any existing, non-cancelled reservation that overlaps this time range.
       const conflict = await tx.reservation.findFirst({
         where: {
           resourceId: input.resourceId,
@@ -157,6 +160,7 @@ export async function createReservation(input: CreateReservationInput) {
       }
 
       // 5. Ensure valid user exists in PostgreSQL
+      // Resolve preset or fallback IDs to an actual user record before creating the booking.
       let validUserId = input.userId;
       let existingUser = await tx.user.findUnique({
         where: { id: input.userId },
@@ -245,6 +249,7 @@ export async function createReservation(input: CreateReservationInput) {
 
 export async function cancelReservation(reservationId: string, reason?: string) {
   try {
+    // Preserve the reservation record and history by changing its status instead of deleting it.
     const updated = await prisma.reservation.update({
       where: { id: reservationId },
       data: {
@@ -267,6 +272,7 @@ export async function cancelReservation(reservationId: string, reason?: string) 
 
 export async function checkInReservation(reservationId: string) {
   try {
+    // Verify the reservation exists and is not cancelled before checking it in.
     const reservation = await prisma.reservation.findUnique({
       where: { id: reservationId },
     });
@@ -323,6 +329,7 @@ export async function getAllReservations(options?: {
   categoryId?: string;
 }) {
   try {
+    // Add each supplied filter to the query; omitted options do not restrict the results.
     const where: any = {
       status: { notIn: [ReservationStatus.CANCELLED] },
     };

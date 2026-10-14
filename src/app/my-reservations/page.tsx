@@ -6,6 +6,7 @@ import { BookmarkCheck } from "lucide-react";
 export const dynamic = "force-dynamic";
 
 export default async function MyReservationsPage() {
+  // Fetch the current user's reservations on the server for this page request.
   const allReservations = await getUserReservations();
 
   return (
@@ -22,6 +23,7 @@ export default async function MyReservationsPage() {
         </div>
       </div>
 
+      {/* Seed the reservations list with the data loaded above. */}
       <MyReservationsList initialReservations={allReservations as any} />
     </div>
   );

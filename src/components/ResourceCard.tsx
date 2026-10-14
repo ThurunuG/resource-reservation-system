@@ -20,10 +20,12 @@ interface ResourceCardProps {
 }
 
 export function ResourceCard({ resource }: ResourceCardProps) {
+  // Keep the reservation dialog state local to this resource card.
   const [modalOpen, setModalOpen] = useState(false);
+  // Only available resources can be booked directly from the card.
   const isAvailable = resource.status === "AVAILABLE";
 
-  // Parse amenities from JSON string safely
+  // Amenities are stored as JSON; fall back to an empty list if the value is invalid.
   let amenities: string[] = [];
   try {
     amenities = JSON.parse(resource.amenities || "[]");
@@ -119,6 +121,7 @@ export function ResourceCard({ resource }: ResourceCardProps) {
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
 
+            {/* Show booking only when the resource is available. */}
             {isAvailable ? (
               <button
                 type="button"
@@ -141,7 +144,7 @@ export function ResourceCard({ resource }: ResourceCardProps) {
         </div>
       </div>
 
-      {/* Reservation Modal */}
+      {/* Render the modal alongside the card so it can be opened from the Book Now action. */}
       <ReservationModal
         resource={resource}
         isOpen={modalOpen}

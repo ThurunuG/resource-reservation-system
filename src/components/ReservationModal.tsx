@@ -39,6 +39,7 @@ export function ReservationModal({
     const d = defaultDate ? new Date(defaultDate) : new Date();
     d.setMinutes(0, 0, 0);
     d.setHours(d.getHours() + 1);
+    // Adjust for the local timezone so the value matches datetime-local input format.
     return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
   };
 
@@ -79,6 +80,7 @@ export function ReservationModal({
   useEffect(() => {
     if (!isOpen || !resource || !startTime || !endTime) return;
 
+    // Debounce availability checks and disregard results from outdated requests.
     let isMounted = true;
     const timer = setTimeout(async () => {
       setIsChecking(true);
@@ -104,6 +106,7 @@ export function ReservationModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Do not submit if the selected time range conflicts with another reservation.
     if (conflictMessage) return;
 
     setIsSubmitting(true);

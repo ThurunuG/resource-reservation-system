@@ -24,12 +24,14 @@ export default async function ResourceDetailPage({
 }: {
   params: { id: string };
 }) {
+  // Fetch the resource details before rendering the page.
   const resource = await getResourceById(params.id);
 
   if (!resource) {
     notFound();
   }
 
+  // Amenities are stored as JSON; use an empty list if the data is malformed.
   let amenities: string[] = [];
   try {
     amenities = JSON.parse(resource.amenities || "[]");
