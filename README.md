@@ -1,6 +1,5 @@
 # Resource Reservation Management System
 
-**PrimeWave Lab (Pvt) Ltd • Software Engineering Internship Technical Assessment**  
 **Technology Stack:** Next.js (App Router), TypeScript, PostgreSQL, Prisma ORM, Tailwind CSS
 
 ---
@@ -225,8 +224,4 @@ A comprehensive, time-stamped 3–5 minute presentation guide and speech script 
 ├── DEMO_VIDEO_GUIDE.md             # 3-5 minute video recording script
 └── package.json
 ```
-
 ---
-
-## 📄 License & Attribution
-Developed for the **PrimeWave Lab (Pvt) Ltd** Software Engineering Internship Technical Assessment.
